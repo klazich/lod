@@ -1,0 +1,38 @@
+{
+  "name": "lod",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.73.0"
+  },
+  "babel": {
+    "presets": [
+      "flow",
+      "env"
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "scripts": {
+    "build": "babel src -d lib",
+    "prettier": "prettier --write \"src/**/*.{js,jsx,json,css}\"",
+    "flow": "flow",
+    "start": "node lib/index.js",
+    "prestart": "yarn run build"
+  },
+  "dependencies": {
+    "feedparser": "^2.2.9",
+    "node-fetch": "^2.1.2",
+    "request": "^2.87.0"
+  }
+}
