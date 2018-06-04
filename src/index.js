@@ -1,48 +1,41 @@
 // @flow
 
-import { URL } from 'url';
-import fetch from 'node-fetch';
-import request from 'request';
-import FeedParser from 'feedparser';
+import request from 'request'
+import FeedParser from 'feedparser'
 
-const FEED = 'https://louisvilleky.gov/government/all/news/feed';
+import * as config from './config.js'
 
-const lod = new URL(
-  '/package_show',
-  'http://data.louisvilleky.gov/api/3/action'
-);
+const req = request(config.FEED_NEWS.href)
+const feedparser = new FeedParser()
 
-// ---
+const handleError = (e: Error): void => console.error(e)
 
-const req = request(FEED);
-const feedparser = new FeedParser();
+req.on('error', done)
+req.on('response', function(res): void {
+  const stream = this
 
-req.on('error', (error: Error): void => {
-  console.log(error);
-});
+  res.statusCode !== 200
+    ? this.emit('error', new Error(`Bad status code ${res.statusCode}`))
+    : res.pipe(feedparser)
+})
 
-req.on('response', function(res) {
-  const stream = this; // `this` is `req`, which is a stream
-
-  if (res.statusCode !== 200) {
-    this.emit('error', new Error('Bad status code'));
-  } else {
-    stream.pipe(feedparser);
-  }
-});
-
-feedparser.on('error', (error: Error): void => {
-  console.log(error);
-});
-
-feedparser.on('readable', function() {
-  // This is where the action is!
-  const stream = this; // `this` is `feedparser`, which is a stream
-  const meta = this.meta; // **NOTE** the "meta" is always available in the context of the feedparser instance
-  let item;
+feedparser.on('error', done)
+feedparser.on('end', done)
+feedparser.on('readable', function(): void {
+  const stream = this
+  let item
 
   while ((item = stream.read())) {
-    console.log(item.meta['atom:link']);
-    console.log()
+    // console.log(Object.keys(item.meta));
+    // console.dir(item);
+    console.log(item.title)
   }
-});
+})
+
+function done(err) {
+  if (err) {
+    console.error(err, err.stack)
+    return process.exit(1)
+  }
+  process.exit()
+}
