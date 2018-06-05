@@ -1,3 +1,5 @@
+// @flow
+
 import { URL } from 'url'
 
 export const FEED_NEWS = new URL(

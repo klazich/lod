@@ -1,4 +1,5 @@
 [ignore]
+/home/kevin/Documents/Projects/lod/node_modules/rss-parser/test
 
 [include]
 
